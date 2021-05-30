@@ -133,4 +133,46 @@ def level_vist_recur(trees: List[Tree]):
 
 
 def merge_sort(data: List[int]):
-    pass
+    """归并排序的分治实现"""
+    if not data or len(data) == 1:
+        return data
+    merged = []
+    mid = len(data)//2
+    left = data[:mid]
+    right = data[mid:]
+    left_retr = merge_sort(left)
+    right_retr = merge_sort(right)
+
+    left_idx = 0
+    right_idx = 0
+
+    while left_idx < len(left_retr) and right_idx < len(right_retr):
+        if left_retr[left_idx] < right_retr[right_idx]:
+            merged.append(left_retr[left_idx])
+            left_idx += 1
+        else:
+            merged.append(right_retr[right_idx])
+            right_idx += 1
+    if left_idx < len(left_retr):
+        merged.extend(left_retr[left_idx:])
+    else:
+        merged.extend(right_retr[right_idx:])
+
+    return merged
+
+
+def quick_sort(data):
+    """快排的分治实现"""
+    if not data or len(data) == 1:
+        return data
+    flag_val = data[0]
+    left = []
+    right = []
+
+    for i, val in enumerate(data[1:]):
+        if val <= flag_val:
+            left.append(val)
+        else:
+            right.append(val)
+    return quick_sort(left) + [flag_val] + quick_sort(right)
+
