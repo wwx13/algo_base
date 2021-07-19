@@ -61,3 +61,31 @@ class Solution(object):
 
         return max(dfs(i, j) for i in range(row_n) for j in range(col_n))
 
+"""
+记忆化搜索的特点：
+    1. 函数承载了递推的作用，递推值需要单独记录，但是缓存可以帮助我们不反复递归。
+
+"""
+# T5
+# https://leetcode-cn.com/problems/delete-operation-for-two-strings/submissions/
+#
+
+
+class Solution:
+    def minDistance(self, word1: str, word2: str) -> int:
+        mem = [([i] + ([-1] * len(word2))) for i in range(len(word1) + 1)]
+        mem[0] = [i for i in range(len(word2) + 1)]
+
+        def dfs(i, j):
+            if mem[i][j] != -1:
+                return mem[i][j]
+            res = None
+            res = min(dfs(i - 1, j) + 1, dfs(i, j - 1) + 1, dfs(i - 1, j - 1) + 2)
+            if word1[i - 1] == word2[j - 1]:
+                res = min(res, dfs(i - 1, j - 1))
+
+            mem[i][j] = res
+            return res
+
+        return dfs(len(word1), len(word2))
+        # return r
