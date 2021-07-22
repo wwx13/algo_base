@@ -1,5 +1,6 @@
 # 最小生成树
 
+from .stroe_graph import Graph
 """
 Kruscal 算法
 
@@ -88,13 +89,27 @@ class Heap(object):
         self.heap[idx2] = i1
 
     def get_array_val(self, idx):
-        return self.array[idx]
+        return self.array[idx].min_cost
 
 
 class MinTree(object):
-    def __init__(self, graph):
+    def __init__(self, graph: Graph):
+        """
+        :param graph: 通过类实现的邻接表
+        """
+        self.graph = graph
+
         pass
 
-    def prim(self):
+    def prim(self, graph: Graph):
+        self.father = {}  # 记录一个节点的父节点
+
+        head = graph.vertexes[0]
+        self.father[head.node_id] = head.node_id
+        for neibor_node_id in head.connects:
+            neibor_node = graph.get_vertex(neibor_node_id)
+
+        while len(self.father) < graph.vertex_num and
+
         pass
 

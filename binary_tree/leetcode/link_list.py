@@ -124,3 +124,5 @@ class Solution(object):
             fast = fast.next.next
             slow = slow.next
         return False
+
+# TODO 如何找到环的开始
