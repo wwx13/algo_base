@@ -1,6 +1,6 @@
 # 最小生成树
 
-from .stroe_graph import Graph
+from stroe_graph import Graph, build_g
 """
 Kruscal 算法
 
@@ -39,11 +39,11 @@ class Heap(object):
     def __init__(self, array, max_min="min"):
         self.heap = list(range(len(array)))  # 记录在array中的位置
         self.array = array
-        self.__build__()
         self.compare = {
             "min": min,
             "max": max
         }[max_min]
+        self.__build__()
 
     def __build__(self):
         for idx in range(len(self.array)//2 + 1, -1, -1):
@@ -53,7 +53,6 @@ class Heap(object):
         if idx == 0:
             return
         father_idx = (idx - 1) // 2
-
         if self.compare(
                 self.get_array_val(self.heap[father_idx]),
                 self.get_array_val([self.heap[idx]])
@@ -88,8 +87,25 @@ class Heap(object):
         self.heap[idx1] = self.heap[idx2]
         self.heap[idx2] = i1
 
+    def inset_tail(self, val):
+        self.heap.append(val)
+        self.bubble(len(self.heap)-1)
+
+    def pop_head(self):
+        ret = self.heap.pop(0)
+        self.heap.insert(0, self.heap[-1])
+        self.heap.pop(-1)
+        self.down(0)
+        return ret
+
     def get_array_val(self, idx):
-        return self.array[idx].min_cost
+        if self.get_val_func:
+            return self.get_val_func(self.heap, idx)
+
+        return self.heap[idx]
+
+    def set_get_val_func(self, func):
+        self.get_val_func = func
 
 
 class MinTree(object):
@@ -103,13 +119,78 @@ class MinTree(object):
 
     def prim(self, graph: Graph):
         self.father = {}  # 记录一个节点的父节点
+        self.dis = Heap([], max_min="min")
+        def get_val(objs, idx):
+            return objs[idx]["distance"]
+        self.dis.set_get_val_func(get_val)
 
         head = graph.vertexes[0]
-        self.father[head.node_id] = head.node_id
-        for neibor_node_id in head.connects:
-            neibor_node = graph.get_vertex(neibor_node_id)
+        self.father[head.node_id] = {
+            "father": head.node_id,
+            "distance": 0
+        }
+        while len(self.father) < graph.vertex_num:
+            # for neibor_node_dis_mapper in head.connects:
+            # neibor_node_dis_mapper = graph.get_vertex(neibor_node_id)
+            for key, val in head.connects.items():
+                self.dis.inset_tail(
+                    {
+                        "node_id": key,
+                        "distance": val,
+                        "father_id": head.node_id
+                     }
+                )
+            next_head = None
+            while self.dis.heap:
+                next_head = self.dis.pop_head()
+                if next_head["node_id"] not in self.father:
+                    break
+                next_head = None
+            if not next_head:
+                return self.father
 
-        while len(self.father) < graph.vertex_num and
+            self.father[next_head["node_id"]] = {
+                "father": next_head["father_id"],
+                "distance": next_head["distance"]
+            }
+            head = graph.get_vertex(next_head["node_id"])
 
-        pass
+        return self.father
 
+    def kruscal(self, graph: Graph):
+        self.dis = Heap([], max_min="min")
+        def get_val(objs, idx):
+            return objs[idx]["distance"]
+        self.dis.set_get_val_func(get_val)
+
+        g_ids = []
+        for vertex in graph.vertexes:
+            g_ids.append(vertex.node_id)
+            for item in vertex.connects:
+                self.dis.inset_tail(
+                    {
+                        "father": vertex.node_id,
+                        "distance": item["distance"],
+                        "node_id": item["node_id"]
+                    }
+                )
+        self.father = {}
+        union = Union(g_ids)
+
+        while len(self.father) < graph.vertex_num - 1:
+            if not self.dis:
+                raise Exception("有节点无联通")
+            pop_head = self.dis.pop_head()
+            idx1 = pop_head["father"]
+            idx2 = pop_head["node_id"]
+            if union.is_connected(idx1, idx2):
+                continue
+            union.is_connected(idx1, idx2)
+            self.father[idx2] = idx1
+        return self.father
+
+
+if __name__ == "__main__":
+    gh = build_g()
+    mt = MinTree(gh)
+    print(mt.prim(gh))

@@ -44,7 +44,7 @@ class Perceptron(object):
 
     def perdict(self, a_x):
         """
-
+`
         :param a_x: [0.1,100,2121]
         :return:
         """
