@@ -148,3 +148,29 @@ s="c"
 p="*?*"
 r = Solution().isMatch(s=s, p=p)
 print(r)
+
+
+# https://leetcode-cn.com/problems/candy/
+# 分发糖果
+class Solution(object):
+    def candy(self, ratings):
+        """
+        :type ratings: List[int]
+        :rtype: int
+        """
+        if not ratings:
+            return 0
+        if  len(ratings) == 1:
+            return 1
+
+        res = [1] * len(ratings)
+        for idx, val in enumerate(ratings):
+            if idx != 0:
+                if val  > ratings[idx-1]:
+                    res[idx] = res[idx-1] + 1
+
+        for idx in range(len(ratings)-2, -1, -1):
+            if ratings[idx] > ratings[idx+1] and res[idx] <= res[idx+1]:
+                res[idx] = res[idx+1] + 1
+
+        return sum(res)
