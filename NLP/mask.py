@@ -62,3 +62,6 @@ res = mask_time_pooling(torch.tensor([[1,1,1,1],[1,1,1,0],[1,1,0,0]]), torch.ran
 print(res)
 
 # print(res)
+
+def mask_softmax():
+    pass
