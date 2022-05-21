@@ -4,6 +4,7 @@ ST 表(Sparse Table)基于 倍增 思想，可以做到 Θ(nlogn)预处理
 
 递推方程
 F[s][j] 代表区间[s, s + 2^j - 1]
+适用于可重复贡献区间问题例如 区间最值
 """
 
 import math

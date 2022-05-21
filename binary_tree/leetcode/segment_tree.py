@@ -126,5 +126,5 @@ class SegmentTree(object):
     def lay_tag_next_down(self, st_idx, modify_value):
         if (2 * st_idx + 1) < len(self.st):
             self.lazy_tag[2 * st_idx + 1] = modify_value  # 懒惰标记，向上先更新
-        if (2 * st_idx + 1) < len(self.st):
+        if (2 * st_idx + 2) < len(self.st):
             self.lazy_tag[2 * st_idx + 2] = modify_value

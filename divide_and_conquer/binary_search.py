@@ -55,3 +55,5 @@ class Solution(object):
                 index = binary_search(upper_seq, i)
                 upper_seq[index] = i
         return len(upper_seq)
+
+
